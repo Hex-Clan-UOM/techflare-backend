@@ -1,0 +1,10 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+#Environment variable
+.env
+
+# webstorm IDE configuration
+.idea
