@@ -8,5 +8,5 @@ mongoose.connect(process.env.MONGODB_URI,{}, (error) => {
         return;
     }
 
-    console.log('connected to database');
+    console.log('connected to database: ' + process.env.MONGODB_URI);
 });
