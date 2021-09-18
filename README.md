@@ -1,11 +1,15 @@
 # Hex Clan
-A Web application to read and post articles
+
+A Web Application developed for TechFlare Program organized by Faculty of Information Technology, University of Moratuwa.
+
+This web app allows the users to participate in discussions related to their fields and share knowledge and resources with others
 
 ## Tech Stack
+
 **Server:** Node, Express, MongoDB
 
-
 ## Run Locally
+
 Clone the project
 
 ```bash
@@ -37,6 +41,7 @@ Start the server
 ```bash
   npm run test
 ```
+
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
@@ -50,3 +55,4 @@ To run this project, you will need to add the following environment variables to
 - [@LesleyJJ](https://github.com/LesleyJJ)
 - [@mthushi](https://github.com/mthushi)
 - [@laroshan](https://github.com/laroshan)
+- [@Madhurshani-Sivan](https://github.com/Madhurshani-Sivan)
