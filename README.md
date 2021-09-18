@@ -7,7 +7,6 @@ This web app allows the users to participate in discussions related to their fie
 ## Tech Stack
 
 **Server:** Node, Express, MongoDB
-**Client:** React, Redux, Material UI
 
 ## Run Locally
 
