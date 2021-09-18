@@ -8,3 +8,6 @@
 
 # webstorm IDE configuration
 .idea
+
+# ignore log files
+*.log
