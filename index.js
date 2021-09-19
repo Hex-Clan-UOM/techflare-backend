@@ -1,7 +1,7 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const app = express();
-require('./connection');
+require("./connection");
 const logger = require("./logger");
 
 const port = process.env.PORT || 8080;

@@ -6,8 +6,9 @@
 #Environment variable
 .env
 
-# webstorm IDE configuration
+# IDE configuration
 .idea
+.vscode
 
 # ignore log files
 *.log
