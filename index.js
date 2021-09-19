@@ -6,6 +6,9 @@ const logger = require("./logger");
 
 const port = process.env.PORT || 8080;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.get("/", (req, res) => {
   res.json("Hello from Hex Clan");
 });

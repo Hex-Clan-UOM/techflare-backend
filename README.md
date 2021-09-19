@@ -50,6 +50,8 @@ To run this project, you will need to add the following environment variables to
 
 `MONGODB_URI`
 
+`NODE_ENV`
+
 ## Authors
 
 - [@LesleyJJ](https://github.com/LesleyJJ)
