@@ -1,4 +1,4 @@
 module.exports = {
-    environment: process.env.ENVIROMENT
+    environment: process.env.ENVIRONMENT
 }
 

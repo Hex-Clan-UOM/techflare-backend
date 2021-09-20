@@ -34,7 +34,7 @@ const logger = createLogger({
   ],
 });
 
-if (appConfig !== "production") {
+if (appConfig.environment !== "production") {
   logger.add(
     new transports.Console({
       format: consoleFormat,
