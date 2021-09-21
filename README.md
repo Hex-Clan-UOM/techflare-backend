@@ -26,13 +26,14 @@ Install dependencies
 
 ```bash
   npm install
+  yarn install
 ```
 
 Start the server
 
 ```bash
   npm run start
-  npm run dev
+  yarn run start
 
 ```
 
@@ -40,17 +41,18 @@ Start the server
 
 ```bash
   npm run test
+  yarn run test
 ```
 
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`PORT`
+`PORT` - Application port
 
-`MONGODB_URI`
+`MONGO_DB` - MongoDB connection String
 
-`NODE_ENV`
+`NODE_ENV` - Environment in which app is running [development/production]
 
 ## Authors
 
