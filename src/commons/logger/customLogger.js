@@ -1,7 +1,7 @@
 const { createLogger, format, transports } = require("winston");
 const { combine, timestamp, colorize, printf } = format;
 const path = require("path");
-const appConfig = require("../../appConfig");
+const appConfig = require("../../../appConfig");
 
 const logFilePath = path.join(__dirname + "/logs");
 

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const appConfig = require("../appConfig");
+const appConfig = require("../../appConfig");
 const logger = require("../commons/logger");
 
 // connect to mongodb

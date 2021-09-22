@@ -2,8 +2,8 @@ require("dotenv").config();
 const appConfig = require("./appConfig");
 const express = require("express");
 const app = express();
-const connectMongo = require("./connectors");
-const logger = require("./commons/logger");
+const connectMongo = require("./src/connectors");
+const logger = require("./src/commons/logger");
 const port = appConfig.port || 8080;
 
 connectMongo();
@@ -11,7 +11,7 @@ connectMongo();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const { userController } = require("./controllers");
+const { userController } = require("./src/controllers");
 app.use("/user", userController);
 
 app.get("/", async (req, res) => {
