@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const appConfig = require('./appConfig');
-const logger = require("./logger/customLogger");
+const logger = require("./commons/logger");
 
 // connect to mongodb
 mongoose.connect(appConfig.mongoDB, {}, (error) => {

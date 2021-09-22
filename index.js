@@ -3,7 +3,7 @@ const appConfig = require('./appConfig');
 const express = require("express");
 const app = express();
 require("./connection");
-const logger = require('./logger/customLogger');
+const logger = require('./commons/logger');
 
 const port = appConfig.port || 8080;
 
