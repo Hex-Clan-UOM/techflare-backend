@@ -1,10 +1,11 @@
 require("dotenv").config();
+const appConfig = require('./appConfig');
 const express = require("express");
 const app = express();
 require("./connection");
-const logger = require("./logger");
+const logger = require('./logger/customLogger');
 
-const port = process.env.PORT || 8080;
+const port = appConfig.port || 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

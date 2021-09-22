@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
-const logger = require("./logger");
+const appConfig = require('./appConfig');
+const logger = require("./logger/customLogger");
 
 // connect to mongodb
-mongoose.connect(process.env.MONGODB_URI, {}, (error) => {
+mongoose.connect(appConfig.mongoDB, {}, (error) => {
     if (error) {
-        logger.error(`unable to connect to the database!!",${error}`);
+        logger.error('unable to connect to the database! ' + error.message);
         return;
     }
 
