@@ -1,3 +1,3 @@
 const User = require("./userSchema");
 
-module.exports = {User}
+module.exports = { User };

@@ -1,12 +1,12 @@
-const {User}=require("../schemas")
+const { User } = require("../schemas");
 
-const newUser = async (name,email,picture)=>{
-const user = await User.create({
-      name,
-      email,
-      picture
-});
-return user
-}
+const newUser = async (name, email, picture) => {
+  const user = await User.create({
+    name,
+    email,
+    picture,
+  });
+  return user;
+};
 
-module.exports = {newUser}
+module.exports = { newUser };
