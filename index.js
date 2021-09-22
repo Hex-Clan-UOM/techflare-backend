@@ -11,6 +11,9 @@ connectMongo();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const {userController}=require("./controllers")
+app.use("/user", userController);
+
 app.get("/", async(req, res) => {
   res.json("hello")
 });
