@@ -11,11 +11,31 @@ connectMongo();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const { userController } = require("./src/controllers");
-app.use("/user", userController);
+const controllers = require("./src/controllers");
+for (controller in controllers) {
+  app.use(controllers[controller]);
+}
 
-app.get("/", async (req, res) => {
-  res.json("hello");
+// default route handler
+app.all("*", async (req, res, next) => {
+  try {
+    return res.status(404).send({ success: false, message: "data not found" });
+  } catch (e) {
+    res
+      .status(501)
+      .send({
+        success: false,
+        message: "some think went wrong, try again later",
+      });
+  }
+});
+
+// Error handling function
+app.use((err, req, res, next) => {
+  res
+    .status(500)
+    .send({ success: false, message: err.message });
+  return;
 });
 
 app.listen(port, () => {
