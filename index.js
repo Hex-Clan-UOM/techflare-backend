@@ -4,7 +4,6 @@ const express = require("express");
 const app = express();
 const connectMongo = require("./connectors");
 const logger = require('./commons/logger');
-
 const port = appConfig.port || 8080;
 
 connectMongo();
@@ -12,8 +11,8 @@ connectMongo();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.json("Hello from Hex Clan");
+app.get("/", async(req, res) => {
+  res.json("hello")
 });
 
 app.listen(port, () => {
