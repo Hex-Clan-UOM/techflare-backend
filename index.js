@@ -1,17 +1,21 @@
 require("dotenv").config();
-const appConfig = require('./appConfig');
+const appConfig = require("./appConfig");
 const express = require("express");
 const app = express();
-require("./connection");
-const logger = require('./logger/customLogger');
-
+const connectMongo = require("./src/connectors");
+const logger = require("./src/commons/logger");
 const port = appConfig.port || 8080;
+
+connectMongo();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.json("Hello from Hex Clan");
+const { userController } = require("./src/controllers");
+app.use("/user", userController);
+
+app.get("/", async (req, res) => {
+  res.json("hello");
 });
 
 app.listen(port, () => {

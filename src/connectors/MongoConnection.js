@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
-const appConfig = require('./appConfig');
-const logger = require("./logger/customLogger");
+const appConfig = require("../../appConfig");
+const logger = require("../commons/logger");
 
 // connect to mongodb
-mongoose.connect(appConfig.mongoDB, {}, (error) => {
+const connectMongo = ()=>{
+    mongoose.connect(appConfig.mongoDB, {}, (error) => {
     if (error) {
         logger.error('unable to connect to the database! ' + error.message);
         return;
@@ -11,3 +12,7 @@ mongoose.connect(appConfig.mongoDB, {}, (error) => {
 
     logger.info("connected to database");
 });
+}
+
+module.exports = connectMongo
+
