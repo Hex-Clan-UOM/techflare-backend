@@ -1,3 +1,3 @@
-const {createUser} = require("./userService")
+const userService = require("./userService")
 
-module.exports = {createUser}
+module.exports = {userService}

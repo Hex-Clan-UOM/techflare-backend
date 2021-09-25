@@ -1,12 +1,28 @@
-const { User } = require("../schemas");
+class UserClass {
+  firstName;
+  lastName;
+  googleId;
+  email;
+  avatar;
+  createdAt;
 
-const newUser = async (name, email, picture) => {
-  const user = await User.create({
-    name,
+  constructor(
+    firstName,
+    lastName,
+    googleId,
     email,
-    picture,
-  });
-  return user;
-};
+    avatar,
+    createdAt = new Date()
+  ) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.googleId = googleId;
+    this.email = email;
+    this.avatar = avatar;
+    this.createdAt = createdAt;
+  }
 
-module.exports = { newUser };
+
+}
+
+module.exports = UserClass;
