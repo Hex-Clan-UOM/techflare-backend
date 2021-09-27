@@ -3,7 +3,7 @@ const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
 const client = new OAuth2Client(appConfig.googleClientId);
 const { User } = require("../schemas/index");
-const { UserClass } = require("../daos");
+const { newUser } = require("../daos");
 
 const verify = async (token) => {
   const ticket = await client.verifyIdToken({
@@ -28,7 +28,7 @@ const getUserByGoogleId = async (googleId) => {
 };
 
 const createUser = async ({ given_name, family_name, sub, email, picture }) => {
-  const user = new UserClass(given_name, family_name, sub, email, picture);
+  const user = newUser(given_name, family_name, sub, email, picture);
   await new User(user).save();
   return user;
 };

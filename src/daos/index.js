@@ -1,3 +1,3 @@
-const UserClass= require("./user");
+const newUser= require("./user");
 
-module.exports = { UserClass };
+module.exports = { newUser };
