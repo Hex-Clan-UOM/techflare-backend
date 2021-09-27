@@ -1,3 +1,4 @@
 const { newUser } = require("./user");
+const { findUserByEmail } = require("./user");
 
-module.exports = { newUser };
+module.exports = { newUser, findUserByEmail };
