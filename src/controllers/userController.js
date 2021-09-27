@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { logInWithGoogle, getUserByGoogleId } =
-  require("../services").userService;
+require("../services").userService;
 const logger = require("../commons/logger");
 
 router.get("/login", async (req, res) => {
@@ -13,7 +13,7 @@ router.get("/login", async (req, res) => {
         message: "unable to login in to the system, try again later",
       });
     }
-
+    logger.info(user.firstName + " " + user.lastName + " logged in");
     res.send({
       succees: true,
       user,
