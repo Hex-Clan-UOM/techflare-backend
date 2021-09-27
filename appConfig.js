@@ -3,5 +3,6 @@ module.exports = {
   port: process.env.PORT,
   mongoDB: process.env.MONGO_DB,
   googleClientId: process.env.GOOGLE_CLIENT_ID,
-  sessionSecret: process.env.SECRET
+  sessionSecret: process.env.SECRET,
+  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET
 };

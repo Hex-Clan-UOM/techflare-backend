@@ -1,5 +1,6 @@
 const appConfig = require("../../appConfig");
 const { OAuth2Client } = require("google-auth-library");
+const jwt = require("jsonwebtoken");
 const client = new OAuth2Client(appConfig.googleClientId);
 const { User } = require("../schemas/index");
 const { UserClass } = require("../daos");
@@ -32,25 +33,78 @@ const createUser = async ({ given_name, family_name, sub, email, picture }) => {
   return user;
 };
 
-const logInWithGoogle = async (idToken, session) => {
+const logInWithGoogle = (idToken, session) => {
   //varify token
   //check user is already exist in database
-  //if exist => establish a session
+  //if exist => establish a session, create a jwt token, signed, store inside the session
   //if not =>
   //create new user
   //establish session
+  return new Promise((resolve, reject) => {
+    return session.regenerate((err) => {
+      if (err) {
+        reject(new Error("error on regenerating session"));
+      }
+      verify(idToken)
+        .then((payload) => {
+          if (!payload) {
+            reject(new Error("invalid token"));
+          }
 
-  const payload = await verify(idToken);
-  if (!payload) {
-    throw new Error("invalid token");
-  }
+          getUserByGoogleId(payload.sub)
+            .then((user) => {
+              //user not found
+              if (!user) {
+                createUser(payload)
+                  .then((user) => {
+                    session.accessToken = jwt.sign(
+                      {
+                        sessionid: session.id,
+                        googleid: payload.sub,
+                        userid: user._id,
+                      },
+                      appConfig.accessTokenSecret
+                    );
+                    session.userid = user._id;
+                    const userObj = user.toObject();
+                    resolve({ ...userObj, accessToken: session.accessToken });
+                  })
+                  .catch((e) => {
+                    reject(e);
+                  });
+              }
 
-  const user = await getUserByGoogleId(payload.sub);
+              // user  found
+              session.accessToken = jwt.sign(
+                {
+                  sessionid: session.id,
+                  googleid: payload.sub,
+                  userid: user._id,
+                },
+                appConfig.accessTokenSecret
+              );
+              session.userid = user._id;
+              const userObj = user.toObject();
+              resolve({ ...userObj, accessToken: session.accessToken });
+            })
+            .catch((e) => {
+              reject(e);
+            });
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    });
+  });
+};
+
+const getUserById = async (id) => {
+  const user = await User.findById(id);
   if (!user) {
-    user = await createUser(payload);
+    return null;
   }
-  session.userid = user.googleId;
+
   return user;
 };
 
-module.exports = { logInWithGoogle, getUserByGoogleId };
+module.exports = { logInWithGoogle, getUserById };

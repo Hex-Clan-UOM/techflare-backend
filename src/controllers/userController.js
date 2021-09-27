@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { logInWithGoogle, getUserByGoogleId } =
-require("../services").userService;
+const { logInWithGoogle, getUserById } = require("../services").userService;
 const logger = require("../commons/logger");
+const { isAutherized } = require("../express-middleware");
 
 router.get("/login", async (req, res) => {
   try {
@@ -23,13 +23,14 @@ router.get("/login", async (req, res) => {
     res.status(501).send({
       success: false,
       message: "unable to login in to the system, try again later",
+      error: e.message,
     });
   }
 });
 
-router.get("/user", async (req, res) => {
+router.get("/user", isAutherized, async (req, res) => {
   try {
-    const user = await getUserByGoogleId(req.session.userid);
+    const user = await getUserById(req.session.userid);
     if (!user) {
       res.status(404).send({ succees: false, message: "data not found" });
       return;
@@ -41,5 +42,4 @@ router.get("/user", async (req, res) => {
       .send({ success: false, message: "some thing wrong try again later" });
   }
 });
-
 module.exports = router;

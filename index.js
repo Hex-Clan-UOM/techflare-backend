@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 // creating 24 hours from milliseconds
 const oneDay = 1000 * 60 * 60 * 24;
 
-//session middleware
+// session middleware
 app.use(session({
     secret: appConfig.sessionSecret,
     saveUninitialized:true,
