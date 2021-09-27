@@ -1,4 +1,5 @@
 const { newUser, findUserByEmail } = require("../daos");
+const jwt = require("jsonwebtoken");
 
 const createUser = async (name, email, picture) => {
   try {
@@ -11,13 +12,14 @@ const createUser = async (name, email, picture) => {
 
 const signInUser = async (name, email, picture) => {
   try {
-    const user = findUserByEmail(email);
-    if (user) {
-      return user;
-    } else {
+    let user = findUserByEmail(email);
+    if (!user) {
       user = await newUser(name, email, picture);
-      return user;
     }
+    user.token = jwt.sign(user._id, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+    return user;
   } catch (error) {
     console.log(error);
   }
