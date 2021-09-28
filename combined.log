@@ -11,3 +11,7 @@
 2021-09-18 13:12:49 [info] : connected to database
 2021-09-19 17:22:45 [info] : App is running on port: 8080
 2021-09-19 17:22:46 [info] : connected to database
+2021-09-20 19:14:11 [info] : App is running on port: 8080
+2021-09-20 19:14:13 [error] : unable to connect to the database!!",MongoServerError: bad auth : Authentication failed.
+2021-09-20 19:30:29 [info] : App is running on port: 8080
+2021-09-20 19:30:31 [info] : connected to database
