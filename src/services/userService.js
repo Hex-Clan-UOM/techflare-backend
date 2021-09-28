@@ -29,8 +29,9 @@ const getUserByGoogleId = async (googleId) => {
 
 const createUser = async ({ given_name, family_name, sub, email, picture }) => {
   const user = newUser(given_name, family_name, sub, email, picture);
-  await new User(user).save();
-  return user;
+  const newUserToCreate = new User(user);
+  await newUserToCreate.save();
+  return newUserToCreate;
 };
 
 const logInWithGoogle = (idToken, session) => {
@@ -98,13 +99,4 @@ const logInWithGoogle = (idToken, session) => {
   });
 };
 
-const getUserById = async (id) => {
-  const user = await User.findById(id);
-  if (!user) {
-    return null;
-  }
-
-  return user;
-};
-
-module.exports = { logInWithGoogle, getUserById };
+module.exports = { logInWithGoogle };
