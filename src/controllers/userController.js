@@ -4,9 +4,9 @@ const { logInWithGoogle, getUserById } = require("../services").userService;
 const logger = require("../commons/logger");
 const { isAutherized } = require("../express-middleware");
 
-router.get("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
-    const user = await logInWithGoogle(process.env.TEMP_ID_TOKEN, req.session);
+    const user = await logInWithGoogle(req.body.idToken, req.session);
     if (!user) {
       return res.status(401).send({
         success: false,
@@ -30,7 +30,7 @@ router.get("/login", async (req, res) => {
 
 router.get("/user", isAutherized, async (req, res) => {
   try {
-    const user = await getUserById(req.session.userid);
+    const user = await getUserById(req.userid);
     if (!user) {
       res.status(404).send({ succees: false, message: "data not found" });
       return;

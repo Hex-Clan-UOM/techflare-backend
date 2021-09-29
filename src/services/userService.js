@@ -13,7 +13,7 @@ const verify = async (token) => {
 
   const payload = ticket.getPayload();
   if (!payload) {
-    return null;
+    throw new Error('id token is invalid');
   }
   return payload;
 };
@@ -33,69 +33,22 @@ const createUser = async ({ given_name, family_name, sub, email, picture }) => {
   return user;
 };
 
-const logInWithGoogle = (idToken, session) => {
+const logInWithGoogle = async(idToken, session) => {
   //varify token
-  //check user is already exist in database
-  //if exist => establish a session, create a jwt token, signed, store inside the session
-  //if not =>
-  //create new user
-  //establish session
-  return new Promise((resolve, reject) => {
-    return session.regenerate((err) => {
-      if (err) {
-        reject(new Error("error on regenerating session"));
-      }
-      verify(idToken)
-        .then((payload) => {
-          if (!payload) {
-            reject(new Error("invalid token"));
-          }
+  const payload = await verify(idToken);
 
-          getUserByGoogleId(payload.sub)
-            .then((user) => {
-              //user not found
-              if (!user) {
-                createUser(payload)
-                  .then((user) => {
-                    session.accessToken = jwt.sign(
-                      {
-                        sessionid: session.id,
-                        googleid: payload.sub,
-                        userid: user._id,
-                      },
-                      appConfig.accessTokenSecret
-                    );
-                    session.userid = user._id;
-                    const userObj = user.toObject();
-                    resolve({ ...userObj, accessToken: session.accessToken });
-                  })
-                  .catch((e) => {
-                    reject(e);
-                  });
-              }
+  //create user if not exist
+  let user = await getUserByGoogleId(payload.sub);
+  if(!user) {
+    user = await createUser(payload)
+  }
 
-              // user  found
-              session.accessToken = jwt.sign(
-                {
-                  sessionid: session.id,
-                  googleid: payload.sub,
-                  userid: user._id,
-                },
-                appConfig.accessTokenSecret
-              );
-              session.userid = user._id;
-              const userObj = user.toObject();
-              resolve({ ...userObj, accessToken: session.accessToken });
-            })
-            .catch((e) => {
-              reject(e);
-            });
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    });
-  });
+  // add jwt to session
+  const newAccessTokenPayload = {sessionid: session.id, userid: user._id, googleid:user.googleId};
+  const accessToken = jwt.sign(newAccessTokenPayload, appConfig.accessTokenSecret);
+  session.accessToken = accessToken;
+  const userObj = user.toObject();
+  return {...userObj, accessToken};
 };
 
 const getUserById = async (id) => {
