@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 import { port as _port, sessionSecret } from "./appConfig";
 import express, { json, urlencoded } from "express";
 const app = express();
