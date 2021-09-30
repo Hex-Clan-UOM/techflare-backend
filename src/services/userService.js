@@ -59,10 +59,20 @@ const logInWithGoogle = async (idToken, session) => {
   return { ...userObj, accessToken };
 };
 
-const getUserById = async(userid) => {
+const getUserById = async (userid) => {
   const user = await User.findById(userid);
   return user;
-}
+};
 
+const logout = (session) => {
+  return new Promise((resolve, reject) => {
+    session.destroy((err) => {
+      if (err) {
+        reject(new Error("unable to delete the session"));
+      }
+      resolve(true);
+    });
+  });
+};
 
-module.exports = { logInWithGoogle, getUserById };
+module.exports = { logInWithGoogle, getUserById, logout };

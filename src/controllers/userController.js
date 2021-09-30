@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { logInWithGoogle, getUserById } = require("../services").userService;
-const {isAutherized} = require('../express-middleware')
+const { logInWithGoogle, getUserById, logout } =
+  require("../services").userService;
+const { isAutherized } = require("../express-middleware");
 const logger = require("../commons/logger");
 
 router.post("/login", async (req, res) => {
@@ -40,6 +41,22 @@ router.get("/user", isAutherized, async (req, res) => {
     res
       .status(501)
       .send({ success: false, message: "some thing wrong try again later" });
+  }
+});
+
+router.get("/logout", isAutherized, async (req, res) => {
+  try {
+    const logoutStatus = await logout(req.session);
+    if (logoutStatus) {
+      return res.status(200).send({ message: "logout successfully", succees: true });
+    }
+    res
+      .status(400)
+      .send({ success: false, message: "unable to log out" });
+  } catch (e) {
+    res
+      .status(501)
+      .send({ success: false, message: "unable to log out", error: e.message });
   }
 });
 
