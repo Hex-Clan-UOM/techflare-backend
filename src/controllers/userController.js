@@ -5,6 +5,13 @@ const { logInWithGoogle, getUserById, logout } =
 const { isAutherized } = require("../express-middleware");
 const logger = require("../commons/logger");
 
+router.get('/', async(req, res) => {
+  try {
+    res.status(200).send({succees: true, message: 'this is home page'});
+  }catch(e) {
+    res.status(500).send({success: false, message: 'something went wrong'});
+  }
+})
 router.post("/login", async (req, res) => {
   try {
     const user = await logInWithGoogle(req.body.idToken, req.session);
