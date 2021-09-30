@@ -1,3 +1,3 @@
-const createUserDao= require("./user");
+const createUserDao = require("./user");
 
 module.exports = { createUserDao };

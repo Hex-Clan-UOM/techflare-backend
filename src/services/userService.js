@@ -59,13 +59,10 @@ const logInWithGoogle = async (idToken, session) => {
   return { ...userObj, accessToken };
 };
 
-const getUserById = async (id) => {
-  const user = await User.findById(id);
-  if (!user) {
-    return null;
-  }
-
+const getUserById = async(userid) => {
+  const user = await User.findById(userid);
   return user;
-};
+}
+
 
 module.exports = { logInWithGoogle, getUserById };

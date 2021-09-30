@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { logInWithGoogle, getUserById } = require("../services").userService;
+const {isAutherized} = require('../express-middleware')
 const logger = require("../commons/logger");
-const { isAutherized } = require("../express-middleware");
 
 router.post("/login", async (req, res) => {
   try {
@@ -42,4 +42,5 @@ router.get("/user", isAutherized, async (req, res) => {
       .send({ success: false, message: "some thing wrong try again later" });
   }
 });
+
 module.exports = router;
