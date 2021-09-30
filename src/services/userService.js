@@ -3,7 +3,7 @@ const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
 const client = new OAuth2Client(appConfig.googleClientId);
 const { User } = require("../schemas/index");
-const { UserClass } = require("../daos");
+const { createUserDao } = require("../daos");
 
 const verify = async (token) => {
   const ticket = await client.verifyIdToken({
@@ -13,7 +13,7 @@ const verify = async (token) => {
 
   const payload = ticket.getPayload();
   if (!payload) {
-    throw new Error('id token is invalid');
+    throw new Error("id token is invalid");
   }
   return payload;
 };
@@ -28,27 +28,35 @@ const getUserByGoogleId = async (googleId) => {
 };
 
 const createUser = async ({ given_name, family_name, sub, email, picture }) => {
-  const user = new UserClass(given_name, family_name, sub, email, picture);
-  await new User(user).save();
+  const userDao = createUserDao(given_name, family_name, sub, email, picture);
+  const user = new User(userDao);
+  await user.save();
   return user;
 };
 
-const logInWithGoogle = async(idToken, session) => {
+const logInWithGoogle = async (idToken, session) => {
   //varify token
   const payload = await verify(idToken);
 
   //create user if not exist
   let user = await getUserByGoogleId(payload.sub);
-  if(!user) {
-    user = await createUser(payload)
+  if (!user) {
+    user = await createUser(payload);
   }
 
   // add jwt to session
-  const newAccessTokenPayload = {sessionid: session.id, userid: user._id, googleid:user.googleId};
-  const accessToken = jwt.sign(newAccessTokenPayload, appConfig.accessTokenSecret);
+  const newAccessTokenPayload = {
+    sessionid: session.id,
+    userid: user._id,
+    googleid: user.googleId,
+  };
+  const accessToken = jwt.sign(
+    newAccessTokenPayload,
+    appConfig.accessTokenSecret
+  );
   session.accessToken = accessToken;
   const userObj = user.toObject();
-  return {...userObj, accessToken};
+  return { ...userObj, accessToken };
 };
 
 const getUserById = async (id) => {

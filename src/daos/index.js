@@ -1,3 +1,3 @@
-const UserClass= require("./user");
+const createUserDao= require("./user");
 
-module.exports = { UserClass };
+module.exports = { createUserDao };

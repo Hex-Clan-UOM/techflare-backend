@@ -1,28 +1,19 @@
-class UserClass {
-  firstName;
-  lastName;
-  googleId;
-  email;
-  avatar;
-  createdAt;
-
-  constructor(
+const createUserDao = (
+  firstName,
+  lastName,
+  googleId,
+  email,
+  avatar,
+  createdAt = new Date()
+) => {
+  return {
     firstName,
     lastName,
     googleId,
     email,
     avatar,
-    createdAt = new Date()
-  ) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.googleId = googleId;
-    this.email = email;
-    this.avatar = avatar;
-    this.createdAt = createdAt;
-  }
+    createdAt,
+  };
+};
 
-
-}
-
-module.exports = UserClass;
+module.exports = createUserDao;
