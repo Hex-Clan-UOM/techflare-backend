@@ -34,7 +34,7 @@ const createUser = async ({ given_name, family_name, sub, email, picture }) => {
   return user;
 };
 
-const logInWithGoogle = async (idToken, session) => {
+const logInWithGoogle = async (idToken) => {
   //varify token
   const payload = await verify(idToken);
 
@@ -44,17 +44,16 @@ const logInWithGoogle = async (idToken, session) => {
     user = await createUser(payload);
   }
 
-  // add jwt to session
+  // generate jwt
   const newAccessTokenPayload = {
-    sessionid: session.id,
     userid: user._id,
     googleid: user.googleId,
   };
+
   const accessToken = jwt.sign(
     newAccessTokenPayload,
     appConfig.accessTokenSecret
   );
-  session.accessToken = accessToken;
   const userObj = user.toObject();
   return { ...userObj, accessToken };
 };
@@ -64,15 +63,4 @@ const getUserById = async (userid) => {
   return user;
 };
 
-const logout = (session) => {
-  return new Promise((resolve, reject) => {
-    session.destroy((err) => {
-      if (err) {
-        reject(new Error("unable to delete the session"));
-      }
-      resolve(true);
-    });
-  });
-};
-
-module.exports = { logInWithGoogle, getUserById, logout };
+module.exports = { logInWithGoogle, getUserById };
