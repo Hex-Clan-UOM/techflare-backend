@@ -1,3 +1,3 @@
-const newUser= require("./user");
+const createUserDao = require("./user");
 
-module.exports = { newUser };
+module.exports = { createUserDao };
