@@ -2,7 +2,6 @@ require("dotenv").config();
 const appConfig = require("./appConfig");
 const express = require("express");
 const app = express();
-const session = require("express-session");
 const connectMongo = require("./src/connectors");
 const logger = require("./src/commons/logger");
 const port = appConfig.port || 8080;
@@ -13,18 +12,6 @@ connectMongo();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// creating 24 hours from milliseconds
-const oneDay = 1000 * 60 * 60 * 24;
-
-// session middleware
-app.use(
-  session({
-    secret: appConfig.sessionSecret,
-    saveUninitialized: true,
-    cookie: { maxAge: oneDay },
-    resave: false,
-  })
-);
 
 const controllers = require("./src/controllers");
 for (controller in controllers) {
