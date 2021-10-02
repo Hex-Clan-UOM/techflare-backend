@@ -4,5 +4,6 @@ module.exports = {
   mongoDB: process.env.MONGO_DB,
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   sessionSecret: process.env.SECRET,
-  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET
+  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+  frontEnd: process.env.FRONTEND_URI
 };
