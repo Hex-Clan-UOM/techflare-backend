@@ -41,7 +41,7 @@ router.get("/posts/:id", isAutherized, async (req, res) => {
 router.post("/post", isAutherized, async (req, res) => {
   const { author, title, body } = req.body;
   try {
-    const post = await createPost(author, title, body);
+    const post = await createPost(req.userid, title, body);
     res.json(post);
   } catch (e) {
     res.send(e.message);
