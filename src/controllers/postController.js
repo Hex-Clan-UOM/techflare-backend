@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const logger = require("../commons/logger");
-const { findAllPosts, findPostById } = require("../services");
+const { findAllPosts, findPostById, createPost } = require("../services");
 
 router.get("/posts", async (req, res) => {
   try {
@@ -18,6 +18,16 @@ router.get("/posts/:id", async (req, res) => {
     res.status(200).json(post);
   } catch (e) {
     res.json(e.message);
+  }
+});
+
+router.post("/post", async (req, res) => {
+  const { author, title, body } = req.body;
+  try {
+    const post = await createPost(author, title, body);
+    res.json(post);
+  } catch (e) {
+    res.send(e.message);
   }
 });
 

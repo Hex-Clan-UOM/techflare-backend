@@ -1,3 +1,4 @@
+const { createPostDao } = require("../daos");
 const { Post } = require("../schemas/index");
 
 const findPostById = async (postId) => {
@@ -10,4 +11,11 @@ const findAllPosts = async () => {
   return posts;
 };
 
-module.exports = { findPostById, findAllPosts };
+const createPost = async (author, title, body) => {
+  const postDao = createPostDao(author, title, body);
+  const post = new Post(postDao);
+  await post.save();
+  return post;
+};
+
+module.exports = { findPostById, findAllPosts, createPost };
