@@ -18,7 +18,9 @@ const postSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-});
+}, {versionkey: false});
+
+postSchema.index({ title: "text", body: "text" });
 
 const Post = mongoose.model("Post", postSchema);
 

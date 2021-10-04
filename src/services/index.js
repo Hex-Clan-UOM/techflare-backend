@@ -1,4 +1,4 @@
 const userService = require("./userService");
-const { findPostById, findAllPosts, createPost } = require("./postService");
+const postService = require("./postService");
 
-module.exports = { userService, findPostById, findAllPosts, createPost };
+module.exports = { userService, postService };
