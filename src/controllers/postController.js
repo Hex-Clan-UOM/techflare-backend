@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const logger = require("../commons/logger");
 const { findAllPosts, findPostById, createPost } = require("../services");
+const { isAutherized } = require("../express-middleware");
 
-router.get("/posts", async (req, res) => {
+router.get("/posts", isAutherized, async (req, res) => {
   try {
     const posts = await findAllPosts();
     res.status(200).json(posts);
@@ -12,7 +12,7 @@ router.get("/posts", async (req, res) => {
   }
 });
 
-router.get("/posts/:id", async (req, res) => {
+router.get("/posts/:id", isAutherized, async (req, res) => {
   try {
     const post = await findPostById(req.params.id);
     res.status(200).json(post);
@@ -21,7 +21,7 @@ router.get("/posts/:id", async (req, res) => {
   }
 });
 
-router.post("/post", async (req, res) => {
+router.post("/post", isAutherized, async (req, res) => {
   const { author, title, body } = req.body;
   try {
     const post = await createPost(author, title, body);
