@@ -9,7 +9,7 @@ router.get("/posts/search", isAutherized, async (req, res) => {
   try {
     const { value, skip, limit } = { ...req.query };
     const searchResult = await searchPosts(value, skip, limit);
-    if (!searchResult) {
+    if (!searchResult || searchResult.length < 1) {
       return res
         .status(404)
         .send({ sucess: false, message: "search result not found" });
@@ -39,7 +39,7 @@ router.get("/posts/:id", isAutherized, async (req, res) => {
 });
 
 router.post("/post", isAutherized, async (req, res) => {
-  const { author, title, body } = req.body;
+  const { title, body } = req.body;
   try {
     const post = await createPost(req.userid, title, body);
     res.json(post);
