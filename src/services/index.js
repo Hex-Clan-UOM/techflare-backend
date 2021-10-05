@@ -1,3 +1,4 @@
-const userService = require("./userService")
+const userService = require("./userService");
+const postService = require("./postService");
 
-module.exports = {userService}
+module.exports = { userService, postService };
