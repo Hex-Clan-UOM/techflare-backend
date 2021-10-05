@@ -28,12 +28,16 @@ const createPost = async (author, title, body) => {
   return newPost;
 };
 
-const searchPosts = async (searchString, skip, limit) => {
+const searchPosts = async (searchString, skip, limit, strict) => {
   const skipVal = parseInt(skip, 10);
   const limitVal = parseInt(limit, 10);
   const skipInt = isNaN(skipVal) || skipVal < 0 ? 0 : skipVal;
   const limitInt = isNaN(limitVal) || limitVal < 0 ? 10 : limitVal;
-  return await Post.find({ $text: { $search: searchString } })
+  let search = !searchString ? "" : searchString;
+  if(strict) {
+    search = "\"" + search + "\"";
+  }
+  return await Post.find({ $text: { $search: search } })
     .populate("author", "firstName lastName avatar")
     .skip(skipInt)
     .limit(limitInt);
