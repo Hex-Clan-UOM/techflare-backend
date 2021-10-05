@@ -4,18 +4,18 @@ const express = require("express");
 const app = express();
 const connectMongo = require("./src/connectors");
 const logger = require("./src/commons/logger");
-const port = appConfig.port || 8080;
+const port = appConfig.port || 5000;
 const cors = require("cors");
 
 connectMongo();
 
-const corsOptions ={
-   origin: appConfig.frontEnd, 
-   credentials:true,            //access-control-allow-credentials:true
-   optionSuccessStatus:200,
-}
+const corsOptions = {
+  origin: appConfig.frontEnd,
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
