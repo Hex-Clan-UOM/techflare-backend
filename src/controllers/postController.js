@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { isAutherized } = require("../express-middleware");
 const logger = require("../commons/logger");
+const { findUserFromToken } = require("../services/").userService;
 const { findAllPosts, findPostById, createPost, searchPosts } =
   require("../services").postService;
 
@@ -39,6 +40,9 @@ router.get("/posts/:id", isAutherized, async (req, res) => {
 });
 
 router.post("/post", isAutherized, async (req, res) => {
+  const author = await findUserFromToken(
+    req.header("Authorization").replace("Bearer ", "")
+  );
   const { title, body } = req.body;
   try {
     const post = await createPost(req.userid, title, body);

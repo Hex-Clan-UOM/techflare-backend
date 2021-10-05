@@ -63,4 +63,9 @@ const getUserById = async (userid) => {
   return user;
 };
 
-module.exports = { logInWithGoogle, getUserById };
+const findUserFromToken = async (accessToken) => {
+  const decoded = await jwt.decode(accessToken);
+  return decoded.userid;
+};
+
+module.exports = { logInWithGoogle, getUserById, findUserFromToken };
