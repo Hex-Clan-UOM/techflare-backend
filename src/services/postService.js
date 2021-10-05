@@ -28,6 +28,11 @@ const createPost = async (author, title, body) => {
   return newPost;
 };
 
+const deletePost = async (postId) => {
+  const post = await Post.findByIdAndDelete(postId);
+  return post;
+};
+
 const searchPosts = async (searchString, skip, limit) => {
   const skipVal = parseInt(skip, 10);
   const limitVal = parseInt(limit, 10);
@@ -39,4 +44,10 @@ const searchPosts = async (searchString, skip, limit) => {
     .limit(limitInt);
 };
 
-module.exports = { findPostById, findAllPosts, createPost, searchPosts };
+module.exports = {
+  findPostById,
+  findAllPosts,
+  createPost,
+  searchPosts,
+  deletePost,
+};

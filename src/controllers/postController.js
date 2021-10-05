@@ -3,7 +3,7 @@ const router = express.Router();
 const { isAutherized } = require("../express-middleware");
 const logger = require("../commons/logger");
 const { findUserFromToken } = require("../services/").userService;
-const { findAllPosts, findPostById, createPost, searchPosts } =
+const { findAllPosts, findPostById, createPost, searchPosts, deletePost } =
   require("../services").postService;
 
 router.get("/posts/search", isAutherized, async (req, res) => {
@@ -47,6 +47,15 @@ router.post("/post", isAutherized, async (req, res) => {
   try {
     const post = await createPost(req.userid, title, body);
     res.json(post);
+  } catch (e) {
+    res.send(e.message);
+  }
+});
+
+router.delete("/post/:id", isAutherized, async (req, res) => {
+  try {
+    const deletedPost = await deletePost(req.params.id);
+    res.json(deletedPost);
   } catch (e) {
     res.send(e.message);
   }
