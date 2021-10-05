@@ -28,4 +28,15 @@ const createPost = async (author, title, body) => {
   return newPost;
 };
 
-module.exports = { findPostById, findAllPosts, createPost };
+const searchPosts = async (searchString, skip, limit) => {
+  const skipVal = parseInt(skip, 10);
+  const limitVal = parseInt(limit, 10);
+  const skipInt = isNaN(skipVal) || skipVal < 0 ? 0 : skipVal;
+  const limitInt = isNaN(limitVal) || limitVal < 0 ? 10 : limitVal;
+  return await Post.find({ $text: { $search: searchString } })
+    .populate("author", "firstName lastName avatar")
+    .skip(skipInt)
+    .limit(limitInt);
+};
+
+module.exports = { findPostById, findAllPosts, createPost, searchPosts };

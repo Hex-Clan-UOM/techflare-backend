@@ -24,6 +24,9 @@ for (controller in controllers) {
   app.use(controllers[controller]);
 }
 
+// const lorumRouter = require('./play_ground/lorumIpsum')
+// app.use(lorumRouter);
+
 // default route handler
 app.all("*", async (req, res, next) => {
   try {
