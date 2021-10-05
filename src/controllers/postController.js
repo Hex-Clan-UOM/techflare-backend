@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { findAllPosts, findPostById, createPost } = require("../services");
+const {
+  findAllPosts,
+  findPostById,
+  createPost,
+  findUserFromToken,
+} = require("../services");
 const { isAutherized } = require("../express-middleware");
+const jwt = require("jsonwebtoken");
 
 router.get("/posts", isAutherized, async (req, res) => {
   try {
@@ -22,7 +28,10 @@ router.get("/posts/:id", isAutherized, async (req, res) => {
 });
 
 router.post("/post", isAutherized, async (req, res) => {
-  const { author, title, body } = req.body;
+  const author = await findUserFromToken(
+    req.header("Authorization").replace("Bearer ", "")
+  );
+  const { title, body } = req.body;
   try {
     const post = await createPost(author, title, body);
     res.json(post);
