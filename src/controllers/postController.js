@@ -23,14 +23,15 @@ router.get("/posts/search", isAutherized, async (req, res) => {
 
 router.get("/posts", isAutherized, async (req, res) => {
   try {
-    const posts = await findAllPosts();
+    const { skip, limit } = { ...req.query };
+    const posts = await findAllPosts(skip, limit);
     res.status(200).json(posts);
   } catch (e) {
     res.json(e.message);
   }
 });
 
-router.get("/posts/:id", isAutherized, async (req, res) => {
+router.get("/post/:id", isAutherized, async (req, res) => {
   try {
     const post = await findPostById(req.params.id);
     res.status(200).json(post);

@@ -9,11 +9,15 @@ const findPostById = async (postId) => {
   return post;
 };
 
-const findAllPosts = async () => {
-  const posts = await Post.find({}).populate(
-    "author",
-    "firstName lastName avatar"
-  );
+const findAllPosts = async (skip, limit) => {
+  const skipVal = parseInt(skip, 10);
+  const limitVal = parseInt(limit, 10);
+  const skipInt = isNaN(skipVal) || skipVal < 0 ? 0 : skipVal;
+  const limitInt = isNaN(limitVal) || limitVal < 0 ? 10 : limitVal;
+  const posts = await Post.find({})
+    .populate("author", "firstName lastName avatar")
+    .skip(skipInt)
+    .limit(limitInt);
   return posts;
 };
 
