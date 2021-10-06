@@ -8,8 +8,8 @@ const { findAllPosts, findPostById, createPost, searchPosts, deletePost } =
 
 router.get("/posts/search", isAutherized, async (req, res) => {
   try {
-    const { value, skip, limit } = { ...req.query };
-    const searchResult = await searchPosts(value, skip, limit);
+    const { value, skip, limit,strict } = { ...req.query };
+    const searchResult = await searchPosts(value, skip, limit, strict);
     if (!searchResult || searchResult.length < 1) {
       return res
         .status(404)
