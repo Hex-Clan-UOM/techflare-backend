@@ -9,11 +9,15 @@ const findPostById = async (postId) => {
   return post;
 };
 
-const findAllPosts = async () => {
-  const posts = await Post.find({}).populate(
-    "author",
-    "firstName lastName avatar"
-  );
+const findAllPosts = async (skip, limit) => {
+  const skipVal = parseInt(skip, 10);
+  const limitVal = parseInt(limit, 10);
+  const skipInt = isNaN(skipVal) || skipVal < 0 ? 0 : skipVal;
+  const limitInt = isNaN(limitVal) || limitVal < 0 ? 10 : limitVal;
+  const posts = await Post.find({})
+    .populate("author", "firstName lastName avatar")
+    .skip(skipInt)
+    .limit(limitInt);
   return posts;
 };
 
@@ -28,14 +32,19 @@ const createPost = async (author, title, body) => {
   return newPost;
 };
 
+const deletePost = async (postId) => {
+  const post = await Post.findByIdAndDelete(postId);
+  return post;
+};
+
 const searchPosts = async (searchString, skip, limit, strict) => {
   const skipVal = parseInt(skip, 10);
   const limitVal = parseInt(limit, 10);
   const skipInt = isNaN(skipVal) || skipVal < 0 ? 0 : skipVal;
   const limitInt = isNaN(limitVal) || limitVal < 0 ? 10 : limitVal;
   let search = !searchString ? "" : searchString;
-  if(strict) {
-    search = "\"" + search + "\"";
+  if (strict) {
+    search = '"' + search + '"';
   }
   return await Post.find({ $text: { $search: search } })
     .populate("author", "firstName lastName avatar")
@@ -43,4 +52,10 @@ const searchPosts = async (searchString, skip, limit, strict) => {
     .limit(limitInt);
 };
 
-module.exports = { findPostById, findAllPosts, createPost, searchPosts };
+module.exports = {
+  findPostById,
+  findAllPosts,
+  createPost,
+  searchPosts,
+  deletePost,
+};
