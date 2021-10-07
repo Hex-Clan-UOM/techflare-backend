@@ -8,7 +8,7 @@ const { findAllPosts, findPostById, createPost, searchPosts, deletePost } =
 
 router.get("/posts/search", isAutherized, async (req, res) => {
   try {
-    const { value, skip, limit,strict } = { ...req.query };
+    const { value, skip, limit, strict } = { ...req.query };
     const searchResult = await searchPosts(value, skip, limit, strict);
     if (!searchResult || searchResult.length < 1) {
       return res
@@ -24,8 +24,8 @@ router.get("/posts/search", isAutherized, async (req, res) => {
 router.get("/posts", isAutherized, async (req, res) => {
   try {
     const { skip, limit } = { ...req.query };
-    const posts = await findAllPosts(skip, limit);
-    res.status(200).json(posts);
+    const { posts, number } = await findAllPosts(skip, limit);
+    res.status(200).json({ posts, number });
   } catch (e) {
     res.json(e.message);
   }

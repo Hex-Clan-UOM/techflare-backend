@@ -14,11 +14,13 @@ const findAllPosts = async (skip, limit) => {
   const limitVal = parseInt(limit, 10);
   const skipInt = isNaN(skipVal) || skipVal < 0 ? 0 : skipVal;
   const limitInt = isNaN(limitVal) || limitVal < 0 ? 10 : limitVal;
+  const number = await Post.countDocuments();
+
   const posts = await Post.find({})
     .populate("author", "firstName lastName avatar")
     .skip(skipInt)
     .limit(limitInt);
-  return posts;
+  return { posts, number };
 };
 
 const createPost = async (author, title, body) => {
