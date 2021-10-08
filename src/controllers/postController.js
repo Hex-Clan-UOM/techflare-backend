@@ -11,11 +11,13 @@ router.get("/posts/search", isAutherized, async (req, res) => {
     const { value, skip, limit, strict } = { ...req.query };
     const searchResult = await searchPosts(value, skip, limit, strict);
     if (!searchResult || searchResult.length < 1) {
-      return res
-        .status(404)
-        .send({ sucess: false, message: "search result not found" });
+      return res.send({
+        success: false,
+        posts: [],
+        message: "search result not found",
+      });
     }
-    res.send({ success: true, data: searchResult });
+    res.json({ success: true, posts: searchResult });
   } catch (e) {
     res.status(500).send({ sucess: false, message: e.message });
   }
