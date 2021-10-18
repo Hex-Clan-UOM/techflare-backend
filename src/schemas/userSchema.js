@@ -32,5 +32,8 @@ const userSchema = mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
+const registerUser = (connection) => {
+  return connection.model("User", userSchema);
+};
 
-module.exports = User;
+module.exports = { User, userSchema, registerUser };

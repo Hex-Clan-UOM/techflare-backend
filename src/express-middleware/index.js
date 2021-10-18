@@ -4,7 +4,6 @@ const isAutherized = async (req, res, next) => {
   try {
     const accessToken = req.header("Authorization").replace("Bearer ", "");
     const payload = jwt.verify(accessToken, appConfig.accessTokenSecret);
-
     if (!payload) {
       throw new Error("please login again");
     }

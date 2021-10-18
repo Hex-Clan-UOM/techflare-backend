@@ -2,7 +2,7 @@ const appConfig = require("../../appConfig");
 const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
 const client = new OAuth2Client(appConfig.googleClientId);
-const { User } = require("../schemas/index");
+const { User } = require("../schemas").User;
 const { createUserDao } = require("../daos");
 
 const verify = async (token) => {
@@ -10,7 +10,6 @@ const verify = async (token) => {
     idToken: token,
     audience: appConfig.googleClientId, // Specify the CLIENT_ID of the app that accesses the backend
   });
-
   const payload = ticket.getPayload();
   if (!payload) {
     throw new Error("id token is invalid");
@@ -38,8 +37,10 @@ const logInWithGoogle = async (idToken) => {
   //varify token
   const payload = await verify(idToken);
 
+
   //create user if not exist
   let user = await getUserByGoogleId(payload.sub);
+
   if (!user) {
     user = await createUser(payload);
   }
@@ -68,4 +69,4 @@ const findUserFromToken = async (accessToken) => {
   return decoded.userid;
 };
 
-module.exports = { logInWithGoogle, getUserById, findUserFromToken };
+module.exports = { logInWithGoogle, getUserById, findUserFromToken, client, createUser};
