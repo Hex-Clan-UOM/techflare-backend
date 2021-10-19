@@ -20,12 +20,13 @@ const createComment = async (author, post, title, body) => {
   return newComment;
 };
 
-// const deletePost = async (postId) => {
-//   const post = await Post.findByIdAndDelete(postId);
-//   return post;
-// };
+const deleteComment = async (commentId) => {
+  const comment = await Comment.findByIdAndDelete(commentId);
+  return comment;
+};
 
 module.exports = {
   findCommentsByPost,
   createComment,
+  deleteComment,
 };

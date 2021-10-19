@@ -5,6 +5,7 @@ const logger = require("../commons/logger");
 const { findUserFromToken } = require("../services/").userService;
 const { findAllPosts, findPostById, createPost, searchPosts, deletePost } =
   require("../services").postService;
+const { findCommentsByPost } = require("../services/commentService");
 
 router.get("/posts/search", isAutherized, async (req, res) => {
   try {
@@ -36,7 +37,8 @@ router.get("/posts", isAutherized, async (req, res) => {
 router.get("/post/:id", isAutherized, async (req, res) => {
   try {
     const post = await findPostById(req.params.id);
-    res.status(200).json(post);
+    const comments = await findCommentsByPost(req.params.id);
+    res.status(200).json({ post, comments });
   } catch (e) {
     res.json(e.message);
   }
