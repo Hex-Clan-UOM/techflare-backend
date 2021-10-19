@@ -17,6 +17,9 @@ const findAllPosts = async (skip, limit) => {
   const number = await Post.countDocuments();
 
   const posts = await Post.find({})
+    .sort({
+      createdAt: -1,
+    })
     .populate("author", "firstName lastName avatar")
     .skip(skipInt)
     .limit(limitInt);
@@ -58,6 +61,9 @@ const searchPosts = async (searchString, skip, limit, strict) => {
     search = '"' + search + '"';
   }
   return await Post.find({ $text: { $search: search } })
+    .sort({
+      createdAt: -1,
+    })
     .populate("author", "firstName lastName avatar")
     .skip(skipInt)
     .limit(limitInt);

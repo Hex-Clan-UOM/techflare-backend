@@ -2,10 +2,11 @@ const { createCommentDao } = require("../daos");
 const { Comment } = require("../schemas/index");
 
 const findCommentsByPost = async (postId) => {
-  const comments = await Comment.find({ post: postId }).populate(
-    "author",
-    "firstName lastName avatar"
-  );
+  const comments = await Comment.find({ post: postId })
+    .sort({
+      createdAt: -1,
+    })
+    .populate("author", "firstName lastName avatar");
   return comments;
 };
 
