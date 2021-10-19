@@ -39,7 +39,8 @@ const updatePost = async (postid, title, body) => {
     { _id: postid },
     { title, body }
   );
-  return updatedPost;
+  const post = await findPostById(postid);
+  return post;
 };
 
 const deletePost = async (postId) => {
