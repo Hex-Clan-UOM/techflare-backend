@@ -6,6 +6,7 @@ const { findUserFromToken } = require("../services/").userService;
 const { findAllPosts, findPostById, createPost, searchPosts, deletePost } =
   require("../services").postService;
 const { findCommentsByPost } = require("../services/commentService");
+const { updatePost } = require("../services/postService");
 
 router.get("/posts/search", isAutherized, async (req, res) => {
   try {
@@ -57,10 +58,30 @@ router.post("/post", isAutherized, async (req, res) => {
   }
 });
 
+router.put("/post/:id", isAutherized, async (req, res) => {
+  const { title, body } = req.body;
+  try {
+    const posttobeupdate = await findPostById(req.params.id);
+    if (req.userid === posttobeupdate.author._id.toString()) {
+      const post = await updatePost(req.params.id, title, body);
+      res.json(post);
+    } else {
+      res.json("cannot update");
+    }
+  } catch (e) {
+    res.send(e.message);
+  }
+});
+
 router.delete("/post/:id", isAutherized, async (req, res) => {
   try {
-    const deletedPost = await deletePost(req.params.id);
-    res.json(deletedPost);
+    const post = await findPostById(req.params.id);
+    if (req.userid === post.author._id.toString()) {
+      const deletedPost = await deletePost(req.params.id);
+      res.json(deletedPost);
+    } else {
+      res.json("cannot delete");
+    }
   } catch (e) {
     res.send(e.message);
   }

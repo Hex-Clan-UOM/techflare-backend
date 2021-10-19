@@ -34,6 +34,14 @@ const createPost = async (author, title, body) => {
   return newPost;
 };
 
+const updatePost = async (postid, title, body) => {
+  const updatedPost = await Post.findByIdAndUpdate(
+    { _id: postid },
+    { title, body }
+  );
+  return updatedPost;
+};
+
 const deletePost = async (postId) => {
   const post = await Post.findByIdAndDelete(postId);
   return post;
@@ -58,6 +66,7 @@ module.exports = {
   findPostById,
   findAllPosts,
   createPost,
+  updatePost,
   searchPosts,
   deletePost,
 };

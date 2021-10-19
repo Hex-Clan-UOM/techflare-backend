@@ -5,7 +5,10 @@ const logger = require("../commons/logger");
 const { findUserFromToken } = require("../services/").userService;
 const { findCommentsByPost, createComment } =
   require("../services").commentService;
-const { deleteComment } = require("../services/commentService");
+const {
+  deleteComment,
+  findCommentById,
+} = require("../services/commentService");
 
 router.get("/comments/:id", isAutherized, async (req, res) => {
   try {
@@ -31,8 +34,13 @@ router.post("/comment", isAutherized, async (req, res) => {
 
 router.delete("/comment/:id", isAutherized, async (req, res) => {
   try {
-    const deletedComment = await deleteComment(req.params.id);
-    res.json(deletedComment);
+    const comment = await findCommentById(req.params.id);
+    if (req.userid === comment.author.toString()) {
+      const deletedComment = await deleteComment(req.params.id);
+      res.json(deletedComment);
+    } else {
+      res.json("cannot delete");
+    }
   } catch (e) {
     res.send(e.message);
   }

@@ -9,6 +9,11 @@ const findCommentsByPost = async (postId) => {
   return comments;
 };
 
+const findCommentById = async (commentId) => {
+  const comment = await Comment.findById(commentId);
+  return comment;
+};
+
 const createComment = async (author, post, title, body) => {
   const commentDao = createCommentDao(author, post, title, body);
   const comment = new Comment(commentDao);
@@ -29,4 +34,5 @@ module.exports = {
   findCommentsByPost,
   createComment,
   deleteComment,
+  findCommentById,
 };
