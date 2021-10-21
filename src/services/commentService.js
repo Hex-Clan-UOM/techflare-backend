@@ -26,18 +26,18 @@ const createComment = async (author, post, title, body) => {
   return newComment;
 };
 
-const updateComment = async (commentId, body) => {
-  const updatedComment = await Comment.findByIdAndUpdate(
-    { _id: commentId },
-    { body }
+const updateComment = async (commentId, userid, body) => {
+  return await Comment.findOneAndUpdate(
+    { _id: commentId, author: userid },
+    { body },
+    {
+      returnDocument: "after",
+    }
   );
-  const comment = await findCommentById(commentId);
-  return comment;
 };
 
-const deleteComment = async (commentId) => {
-  const comment = await Comment.findByIdAndDelete(commentId);
-  return comment;
+const deleteComment = async (commentId, userid) => {
+  return await Comment.findOneAndDelete({ _id: commentId, author: userid });
 };
 
 module.exports = {
