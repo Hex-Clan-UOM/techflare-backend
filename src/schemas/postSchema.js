@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const moment = require("moment");
 
-const postSchema = mongoose.Schema(
+const postSchema = new mongoose.Schema(
   {
     author: {
       type: mongoose.Schema.Types.ObjectId,
@@ -16,7 +16,7 @@ const postSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    likes: [{ Type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     createdAt: {
       type: Date,
       default: Date.now(),
