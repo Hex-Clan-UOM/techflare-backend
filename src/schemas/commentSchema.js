@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const momont = require('moment');
 
-const commentSchema = mongoose.Schema(
+const commentSchema = new mongoose.Schema(
   {
     author: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,9 +20,10 @@ const commentSchema = mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now(),
+      get: (v) => momont(v).fromNow()
     },
   },
-  { versionKey: false }
+  { versionKey: false, toJSON: {getters: true} }
 );
 
 const Comment = mongoose.model("Comment", commentSchema);
@@ -29,4 +31,4 @@ const registerComment = (connection) => {
   return connection.model('Commect', commentSchema);
 }
 
-module.exports = {Comment, registerComment };
+module.exports = { Comment, registerComment };
