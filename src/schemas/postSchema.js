@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const moment = require('moment');
+const moment = require("moment");
 
 const postSchema = mongoose.Schema(
   {
@@ -16,6 +16,7 @@ const postSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    likes: [{ Type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     createdAt: {
       type: Date,
       default: Date.now(),
@@ -25,7 +26,7 @@ const postSchema = mongoose.Schema(
 );
 
 postSchema.index({ title: "text", body: "text" });
-postSchema.virtual('created').get(function (value, virtual, doc) {
+postSchema.virtual("created").get(function (value, virtual, doc) {
   return moment(this.createdAt).fromNow();
 });
 
@@ -34,4 +35,4 @@ const registerPost = (connection) => {
   return connection.model("Post", postSchema);
 };
 
-module.exports = {Post, registerPost, postSchema};
+module.exports = { Post, registerPost, postSchema };

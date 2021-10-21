@@ -24,8 +24,9 @@ const commentSchema = mongoose.Schema(
   { versionKey: false }
 );
 
-commentSchema.index({ title: "text", body: "text" });
-
 const Comment = mongoose.model("Comment", commentSchema);
+const registerComment = (connection) => {
+  return connection.model('Commect', commentSchema);
+}
 
-module.exports = Comment;
+module.exports = {Comment, registerComment };

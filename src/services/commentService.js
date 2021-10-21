@@ -1,5 +1,5 @@
 const { createCommentDao } = require("../daos");
-const { Comment } = require("../schemas/index");
+const { Comment } = require("../schemas/index").Comment;
 
 const findCommentsByPost = async (postId) => {
   const comments = await Comment.find({ post: postId })
