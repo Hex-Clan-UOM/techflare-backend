@@ -17,6 +17,9 @@ const findAllPosts = async (skip, limit) => {
   const number = await Post.countDocuments();
 
   const posts = await Post.find({})
+    .sort({
+      createdAt: -1,
+    })
     .populate("author", "firstName lastName avatar")
     .skip(skipInt)
     .limit(limitInt);
@@ -34,6 +37,15 @@ const createPost = async (author, title, body) => {
   return newPost;
 };
 
+const updatePost = async (postid, title, body) => {
+  const updatedPost = await Post.findByIdAndUpdate(
+    { _id: postid },
+    { title, body }
+  );
+  const post = await findPostById(postid);
+  return post;
+};
+
 const deletePost = async (postId) => {
   const post = await Post.findByIdAndDelete(postId);
   return post;
@@ -48,18 +60,20 @@ const searchPosts = async (searchString, skip, limit, strict) => {
   if (strict) {
     search = `\"${search}\"`;
   }
-  const result = await Post.find({ $text: { $search: search } })
+  return await Post.find({ $text: { $search: search } })
+    .sort({
+      createdAt: -1,
+    })
     .populate("author", "firstName lastName avatar")
     .skip(skipInt)
-    .limit(limitInt)
-    .sort("createdAt")
-  return result;
+    .limit(limitInt);
 };
 
 module.exports = {
   findPostById,
   findAllPosts,
   createPost,
+  updatePost,
   searchPosts,
   deletePost,
 };
