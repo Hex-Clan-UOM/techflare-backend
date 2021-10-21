@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require('moment');
 
 const postSchema = mongoose.Schema(
   {
@@ -20,11 +21,17 @@ const postSchema = mongoose.Schema(
       default: Date.now(),
     },
   },
-  { versionKey: false }
+  { versionKey: false, toJSON: { virtuals: true } }
 );
 
 postSchema.index({ title: "text", body: "text" });
+postSchema.virtual('created').get(function (value, virtual, doc) {
+  return moment(this.createdAt).fromNow();
+});
 
 const Post = mongoose.model("Post", postSchema);
+const registerPost = (connection) => {
+  return connection.model("Post", postSchema);
+};
 
-module.exports = Post;
+module.exports = {Post, registerPost, postSchema};

@@ -1,49 +1,14 @@
 require("dotenv").config();
+const logger = require('./src/commons/logger');
+const app = require("./app")();
 const appConfig = require("./appConfig");
-const express = require("express");
-const app = express();
-const connectMongo = require("./src/connectors");
-const logger = require("./src/commons/logger");
 const port = appConfig.port || 8080;
-const cors = require("cors");
-
-connectMongo();
-
-const corsOptions ={
-   origin: appConfig.frontEnd, 
-   credentials:true,            //access-control-allow-credentials:true
-   optionSuccessStatus:200,
-}
-
-app.use(cors(corsOptions))
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const controllers = require("./src/controllers");
-for (controller in controllers) {
-  app.use(controllers[controller]);
-}
-
-// const lorumRouter = require('./play_ground/lorumIpsum')
-// app.use(lorumRouter);
-
-// default route handler
-app.all("*", async (req, res, next) => {
-  try {
-    return res.status(404).send({ success: false, message: "data not found" });
-  } catch (e) {
-    res.status(501).send({
-      success: false,
-      message: "some think went wrong, try again later",
-    });
-  }
-});
-
-// Error handling function
-app.use((err, req, res, next) => {
-  res.status(500).send({ success: false, message: err.message });
-  return;
-});
+const connectMongo = require("./src/connectors");
+connectMongo(appConfig.mongoDB).then((res) => {
+  logger.info(res);
+}).catch((err) => {
+  logger.error('unable to connect to mongo DB: ' + err.message);
+})
 
 app.listen(port, () => {
   logger.info("App is running on port: " + port);

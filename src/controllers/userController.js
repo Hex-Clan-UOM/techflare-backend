@@ -4,13 +4,13 @@ const { logInWithGoogle, getUserById } = require("../services").userService;
 const { isAutherized } = require("../express-middleware");
 const logger = require("../commons/logger");
 
-router.get('/', async(req, res) => {
+router.get("/", async (req, res) => {
   try {
-    res.status(200).send({succees: true, message: 'this is home page'});
-  }catch(e) {
-    res.status(500).send({success: false, message: 'something went wrong'});
+    res.status(200).send({ success: true, message: "this is home page" });
+  } catch (e) {
+    res.status(500).send({ success: false, message: "something went wrong" });
   }
-})
+});
 router.post("/login", async (req, res) => {
   try {
     const user = await logInWithGoogle(req.body.idToken);
@@ -21,8 +21,8 @@ router.post("/login", async (req, res) => {
       });
     }
     logger.info(user.firstName + " " + user.lastName + " logged in");
-    res.send({
-      succees: true,
+    res.status(201).send({
+      success: true,
       user,
       message: "you have logged in successfully",
     });
@@ -39,7 +39,7 @@ router.get("/user", isAutherized, async (req, res) => {
   try {
     const user = await getUserById(req.userid);
     if (!user) {
-      res.status(404).send({ succees: false, message: "data not found" });
+      res.status(404).send({ success: false, message: "data not found" });
       return;
     }
     res.send(user);

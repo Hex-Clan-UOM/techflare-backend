@@ -1,5 +1,5 @@
 const { createPostDao } = require("../daos");
-const { Post } = require("../schemas/index");
+const { Post } = require("../schemas/index").Post;
 
 const findPostById = async (postId) => {
   const post = await Post.findById(postId).populate(
@@ -58,7 +58,7 @@ const searchPosts = async (searchString, skip, limit, strict) => {
   const limitInt = isNaN(limitVal) || limitVal < 0 ? 10 : limitVal;
   let search = !searchString ? "" : searchString;
   if (strict) {
-    search = '"' + search + '"';
+    search = `\"${search}\"`;
   }
   return await Post.find({ $text: { $search: search } })
     .sort({

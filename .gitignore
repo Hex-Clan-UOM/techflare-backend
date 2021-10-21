@@ -5,6 +5,7 @@
 
 #Environment variable
 .env
+test.env
 
 # IDE configuration
 .idea
