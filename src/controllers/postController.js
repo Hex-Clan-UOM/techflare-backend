@@ -19,7 +19,7 @@ router.get("/posts/search", isAutherized, async (req, res) => {
     }
     res.json({ success: true, posts: searchResult });
   } catch (e) {
-    res.status(500).send({ sucess: false, message: e.message });
+    res.status(500).send({ success: false, message: e.message });
   }
 });
 

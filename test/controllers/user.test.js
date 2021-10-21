@@ -10,9 +10,10 @@ const connectMongo = require("../../src/connectors");
 const { client, createUser } = require("../../src/services").userService;
 const logger = require("../../src/commons/logger");
 const middleware = require("../../src/express-middleware");
-describe("USER ENDPOINTS", function () {
+describe("[CONTROLLER] USER", function () {
   let User;
   let app;
+  const sanbox = sinon.createSandbox();
   // Called once before any of the tests in this block begin.
   before(function (done) {
     app = createApp();
@@ -29,13 +30,20 @@ describe("USER ENDPOINTS", function () {
     connectMongo(appConfig.mongoDB)
       .then(function (res) {
         if (mongoose.connection.readyState === 1) {
-          mongoose.connection.db.dropDatabase();
-          User = require("../../src/schemas").User.registerUser(
-            mongoose.connection
-          );
-          return done();
+          if (!User) {
+            User = require("../../src/schemas").User.registerUser(
+              mongoose.connection
+            );
+          }
+          return User.deleteMany({})
+            .then((res) => {
+              done();
+            })
+            .catch((e) => {
+              done(e);
+            });
         }
-        done();
+        done(new Error("mongodb connection is not active"));
       })
       .catch((e) => {
         done(new Error(e.message));
@@ -43,6 +51,7 @@ describe("USER ENDPOINTS", function () {
   });
 
   afterEach(function (done) {
+    sanbox.restore();
     mongoose.disconnect();
     done();
   });
@@ -67,6 +76,7 @@ describe("USER ENDPOINTS", function () {
 
   describe("POST /login", function () {
     it("Should return user info", function (done) {
+      this.timeout(0);
       const stub = sinon
         .stub(client, "verifyIdToken")
         .onFirstCall()
@@ -162,6 +172,7 @@ describe("USER ENDPOINTS", function () {
   describe("GET /user", function () {
     let user;
     beforeEach(function (done) {
+      this.timeout(0);
       createUser({
         given_name: "John",
         family_name: "Lesley",
@@ -178,7 +189,8 @@ describe("USER ENDPOINTS", function () {
         });
     });
     it("should return user info", function (done) {
-      const stub = sinon.stub(jwt, "verify");
+      this.timeout(0);
+      const stub = sanbox.stub(jwt, "verify");
       stub.withArgs("123", appConfig.accessTokenSecret).onFirstCall().returns({
         userid: user._id,
         googleid: user.googleId,
@@ -209,7 +221,7 @@ describe("USER ENDPOINTS", function () {
         .then((res) => {
           expect(res.body.success).to.be.equal(false);
           expect(res.body.message).to.be.equal(
-            "access denied: Error: please login again"
+            "access denied: JsonWebTokenError: jwt malformed"
           );
           done();
         })
