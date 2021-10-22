@@ -255,4 +255,199 @@ describe("[CONTROLLER] POST", function () {
         });
     });
   });
+
+  describe("GET /posts/:id", function (done) {
+    let posts;
+    beforeEach(function (done) {
+      this.timeout(0);
+      const ps = require("./samplePosts").map((post) => {
+        return { ...post, author: userCreated._id };
+      });
+      //   Post = mongoose.model("Post");
+      Post.insertMany(ps)
+        .then((result) => {
+          posts = result;
+          return done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+
+    it("should return post with given id", function (done) {
+      this.timeout(0);
+      const savedPost = posts[50];
+      const stub = sandbox.stub(jwt, "verify");
+      stub.withArgs("123", appConfig.accessTokenSecret).onFirstCall().returns({
+        userid: userCreated._id,
+        googleid: userCreated.googleId,
+        iat: 1634500700,
+      });
+      request(app)
+        .get(`/posts/${savedPost._id}`)
+        .set("Authorization", "123")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .then((res) => {
+          expect(res.body.success).to.be.equal(true);
+          expect(res.body.post._id).to.be.equal(savedPost._id.toString());
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+
+    it("should return error response with invalid post id", function (done) {
+      this.timeout(0);
+      const stub = sandbox.stub(jwt, "verify");
+      stub.withArgs("123", appConfig.accessTokenSecret).onFirstCall().returns({
+        userid: userCreated._id,
+        googleid: userCreated.googleId,
+        iat: 1634500700,
+      });
+      request(app)
+        .get(`/posts/3354532454245`)
+        .set("Authorization", "123")
+        .expect("Content-Type", /json/)
+        .expect(400)
+        .then((res) => {
+          expect(res.body.success).to.be.equal(false);
+          expect(res.body.error).to.be.equal(
+            'Cast to ObjectId failed for value "3354532454245" (type string) at path "_id" for model "Post"'
+          );
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+
+    it("should throw error when access token is not provided", function (done) {
+      const savedPost = posts[50];
+      request(app)
+        .get(`/posts/${savedPost._id}`)
+        .set("Authorization", "123")
+        .expect("Content-Type", /json/)
+        .expect(401)
+        .then((res) => {
+          expect(res.body.success).to.be.equal(false);
+          expect(res.body.message).to.be.equal(
+            "access denied: JsonWebTokenError: jwt malformed"
+          );
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+  });
+
+  describe("POST /post", function (done) {
+    it("should create a post", function (done) {
+      const stub = sandbox.stub(jwt, "verify");
+      stub.withArgs("123", appConfig.accessTokenSecret).onFirstCall().returns({
+        userid: userCreated._id,
+        googleid: userCreated.googleId,
+        iat: 1634500700,
+      });
+      request(app)
+        .post("/post")
+        .set("Authorization", "123")
+        .send({
+          title: "Resources to learn JavaScript",
+          body: "Massa vitae tortor condimentum lacinia quis. Placerat orci nulla pellentesque dignissim enim sit amet venenatis. Ac feugiat sed lectus vestibulum mattis ullamcorper velit. Turpis cursus in hac habitasse platea dictumst quisque sagittis. In iaculis nunc sed augue lacus viverra vitae congue eu. Non nisi est sit amet facilisis magna etiam. Nisl nisi scelerisque eu ultrices. Neque viverra justo nec ultrices dui sapien eget mi proin. Tincidunt vitae semper quis lectus nulla. Magnis dis parturient montes nascetur ridiculus mus. Feugiat sed lectus vestibulum mattis ullamcorper. Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque. Sollicitudin nibh sit amet commodo nulla facilisi nullam. Vitae tempus quam pellentesque nec nam.",
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(201)
+        .then((res) => {
+          expect(res.body.author._id).to.be.equal(userCreated._id.toString());
+          expect(res.body.title).to.be.equal("Resources to learn JavaScript");
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+
+    it("should not create post without title", function (done) {
+      const stub = sandbox.stub(jwt, "verify");
+      stub.withArgs("123", appConfig.accessTokenSecret).onFirstCall().returns({
+        userid: userCreated._id,
+        googleid: userCreated.googleId,
+        iat: 1634500700,
+      });
+      request(app)
+        .post("/post")
+        .set("Authorization", "123")
+        .send({
+          body: "Massa vitae tortor condimentum lacinia quis. Placerat orci nulla pellentesque dignissim enim sit amet venenatis. Ac feugiat sed lectus vestibulum mattis ullamcorper velit. Turpis cursus in hac habitasse platea dictumst quisque sagittis. In iaculis nunc sed augue lacus viverra vitae congue eu. Non nisi est sit amet facilisis magna etiam. Nisl nisi scelerisque eu ultrices. Neque viverra justo nec ultrices dui sapien eget mi proin. Tincidunt vitae semper quis lectus nulla. Magnis dis parturient montes nascetur ridiculus mus. Feugiat sed lectus vestibulum mattis ullamcorper. Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque. Sollicitudin nibh sit amet commodo nulla facilisi nullam. Vitae tempus quam pellentesque nec nam.",
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(400)
+        .then((res) => {
+          expect(res.body).to.be.equal(
+            "Post validation failed: title: Path `title` is required."
+          );
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+
+    it("should not create post without body", function (done) {
+      const stub = sandbox.stub(jwt, "verify");
+      stub.withArgs("123", appConfig.accessTokenSecret).onFirstCall().returns({
+        userid: userCreated._id,
+        googleid: userCreated.googleId,
+        iat: 1634500700,
+      });
+      request(app)
+        .post("/post")
+        .set("Authorization", "123")
+        .send({
+          title: "some title",
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(400)
+        .then((res) => {
+          expect(res.body).to.be.equal(
+            "Post validation failed: body: Path `body` is required."
+          );
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+
+    it("should not create post when providing invalid access token", function (done) {
+      request(app)
+        .post("/post")
+        .set("Authorization", "123")
+        .send({
+          title: "some title",
+          body: "body",
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(401)
+        .then((res) => {
+          expect(res.body.success).to.be.equal(false);
+          expect(res.body.message).to.be.equal(
+            "access denied: JsonWebTokenError: jwt malformed"
+          );
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+  });
+
+  
 });

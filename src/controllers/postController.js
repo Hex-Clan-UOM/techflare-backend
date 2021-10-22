@@ -49,7 +49,7 @@ router.get("/posts/:id", isAutherized, async (req, res) => {
     }
     res.status(200).json({ success: true, post });
   } catch (e) {
-    res.status(400).json(e.message);
+    res.status(400).json({success: false, error: e.message});
   }
 });
 
@@ -60,9 +60,9 @@ router.post("/post", isAutherized, async (req, res) => {
     if (!post) {
       return res.status(400).json(post);
     }
-    res.json(post);
+    res.status(201).json(post);
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).json(e.message);
   }
 });
 
