@@ -39,8 +39,8 @@ const findAllPosts = async (skip, limit) => {
   return { posts, number };
 };
 
-const createPost = async (author, title, body) => {
-  const postDao = createPostDao(author, title, body);
+const createPost = async (author, title, body, ...images) => {
+  const postDao = createPostDao(author, title, body, undefined, ...images);
   const post = new Post(postDao);
   await post.save();
   const newPost = await Post.findById(post._id).populate({

@@ -55,8 +55,13 @@ router.get("/posts/:id", isAutherized, async (req, res) => {
 
 router.post("/post", isAutherized, async (req, res) => {
   try {
-    const { title, body } = req.body;
-    const post = await createPost(req.userid, title, body);
+    let { title, body, images } = req.body;
+    if(typeof images === 'string') {
+      images = [images];
+    }else if(!Array.isArray(images)) {
+      images = []
+    }
+    const post = await createPost(req.userid, title, body, ...images);
     if (!post) {
       return res.status(400).json(post);
     }
