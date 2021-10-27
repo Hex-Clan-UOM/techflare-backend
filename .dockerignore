@@ -1,0 +1,17 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+#Environment variable
+.env
+test.env
+
+# IDE configuration
+.idea
+.vscode
+
+# ignore log files
+*.log
+
+/play_ground
