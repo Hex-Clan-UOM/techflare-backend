@@ -50,10 +50,10 @@ const createPost = async (author, title, body, ...images) => {
   return newPost;
 };
 
-const updatePost = async (postid, userid, title, body) => {
+const updatePost = async (postid, userid, title, body, ...images) => {
   return await Post.findOneAndUpdate(
     { _id: postid, author: userid },
-    { title, body },
+    { title, body, images},
     { returnDocument: "after" }
   );
 };
