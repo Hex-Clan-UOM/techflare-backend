@@ -49,14 +49,19 @@ router.get("/posts/:id", isAutherized, async (req, res) => {
     }
     res.status(200).json({ success: true, post });
   } catch (e) {
-    res.status(400).json({success: false, error: e.message});
+    res.status(400).json({ success: false, error: e.message });
   }
 });
 
 router.post("/post", isAutherized, async (req, res) => {
   try {
-    const { title, body } = req.body;
-    const post = await createPost(req.userid, title, body);
+    let { title, body, images } = req.body;
+    if (typeof images === "string") {
+      images = [images];
+    } else if (!Array.isArray(images)) {
+      images = [];
+    }
+    const post = await createPost(req.userid, title, body, ...images);
     if (!post) {
       return res.status(400).json(post);
     }
@@ -67,13 +72,19 @@ router.post("/post", isAutherized, async (req, res) => {
 });
 
 router.put("/post/:id", isAutherized, async (req, res) => {
-  const { title, body } = req.body;
   try {
+    let { title, body, images } = req.body;
+    if (typeof images === "string") {
+      images = [images];
+    } else if (!Array.isArray(images)) {
+      images = [];
+    }
     const updatedPost = await updatePost(
       req.params.id,
       req.userid,
       title,
-      body
+      body,
+      ...images
     );
     if (!updatedPost) {
       return res.status(400).json("cannot update");
