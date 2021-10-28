@@ -1,8 +1,15 @@
-FROM node:17-alpine3.14
-WORKDIR /app
-COPY package.json /app
-RUN npm install -g npm@latest
+FROM node:lts-alpine3.14
+
+WORKDIR /usr/src/app
+
+COPY ./package.json ./
+COPY ./package-lock.json ./
+
+RUN npm install --global nodemon
 RUN npm install --only=prod && npm cache clean --force
-COPY . /app
-EXPOSE 8080
-CMD npm start
+
+COPY . .
+
+EXPOSE 5000
+
+CMD [ "npm", "run", "dev" ]

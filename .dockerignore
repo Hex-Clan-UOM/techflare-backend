@@ -15,3 +15,6 @@ test.env
 *.log
 
 /play_ground
+
+.dockerignore
+Dockerfile
