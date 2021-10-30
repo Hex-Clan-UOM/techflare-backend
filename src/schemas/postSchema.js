@@ -37,7 +37,7 @@ const postSchema = new mongoose.Schema(
 
 postSchema.index({ title: "text", body: "text" });
 postSchema.virtual("created").get(function (value, virtual, doc) {
-  return moment(this.createdAt).fromNow();
+  return moment(this.createdAt).format("D-M-YYYY");
 });
 
 postSchema.virtual("comments", {
