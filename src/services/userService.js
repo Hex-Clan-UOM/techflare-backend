@@ -1,4 +1,4 @@
-const appConfig = require("../../appConfig");
+const appConfig = require("../../config");
 const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
 const client = new OAuth2Client(appConfig.googleClientId);
@@ -17,15 +17,6 @@ const verify = async (token) => {
   return payload;
 };
 
-const getUserByGoogleId = async (googleId) => {
-  const user = await User.findOne({ googleId });
-  if (!user) {
-    return null;
-  }
-
-  return user;
-};
-
 const createUser = async ({ given_name, family_name, sub, email, picture }) => {
   const userDao = createUserDao(given_name, family_name, sub, email, picture);
   const user = new User(userDao);
@@ -37,18 +28,24 @@ const logInWithGoogle = async (idToken) => {
   //varify token
   const payload = await verify(idToken);
 
-
-  //create user if not exist
-  let user = await getUserByGoogleId(payload.sub);
-
-  if (!user) {
-    user = await createUser(payload);
-  }
+  //update/create user
+  let user = await User.findOneAndUpdate(
+    { googleId: payload.sub },
+    {
+      firstName: payload.given_name,
+      lastName: payload.family_name,
+      googleId: payload.sub,
+      email: payload.email,
+      avatar: payload.picture
+    },
+    { upsert: true, returnDocument: "after" }
+  );
 
   // generate jwt
   const newAccessTokenPayload = {
     userid: user._id,
     googleid: user.googleId,
+    role: user.role,
   };
 
   const accessToken = jwt.sign(
@@ -69,4 +66,38 @@ const findUserFromToken = async (accessToken) => {
   return decoded.userid;
 };
 
-module.exports = { logInWithGoogle, getUserById, findUserFromToken, client, createUser};
+const createSuperUser = async (googleId, email) => {
+  const existingUser = await User.findOne({ googleId });
+  if (!existingUser) {
+    const user = createUserDao(
+      "Not set",
+      "Not set",
+      googleId,
+      email,
+      "Not set",
+      undefined,
+      "super-admin"
+    );
+    const newSuperAdmin = new User(user);
+    await newSuperAdmin.save();
+    return newSuperAdmin;
+  }
+  existingUser.role = "super-admin";
+  await existingUser.save();
+  return existingUser;
+};
+
+const changeUserRole = async (userid, role) => {
+  const updatedUser = await User.findByIdAndUpdate(userid, {role}, {returnDocument: 'after', runValidators: true});
+  return updatedUser;
+}
+
+module.exports = {
+  logInWithGoogle,
+  getUserById,
+  findUserFromToken,
+  client,
+  createUser,
+  createSuperUser,
+  changeUserRole
+};
