@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { logInWithGoogle, getUserById } = require("../services").userService;
-const { isAutherized } = require("../express-middleware");
+const { logInWithGoogle, getUserById, changeUserRole } =
+  require("../services").userService;
+const { isAutherized, isSuperAdmin } = require("../express-middleware");
 const logger = require("../commons/logger");
 
 router.get("/", async (req, res) => {
@@ -47,6 +48,34 @@ router.get("/user", isAutherized, async (req, res) => {
     res
       .status(501)
       .send({ success: false, message: "some thing wrong try again later" });
+  }
+});
+
+router.patch("/user/:id", isAutherized, isSuperAdmin, async (req, res) => {
+  try {
+    const user = await changeUserRole(req.params.id, req.body.role);
+    if (!user) {
+      return res
+        .status(404)
+        .send({
+          success: false,
+          message: "user with ID: " + req.params.id + " not found",
+        });
+    }
+
+    res.send({
+      success: true,
+      message: "successfully updated user role",
+      user,
+    });
+  } catch (e) {
+    res
+      .status(500)
+      .send({
+        success: false,
+        message: "unable to update try again later",
+        error: e.message,
+      });
   }
 });
 

@@ -4,7 +4,8 @@ const createUserDao = (
   googleId,
   email,
   avatar,
-  createdAt = new Date()
+  createdAt = new Date(),
+  role = "user"
 ) => {
   return {
     firstName,
@@ -13,6 +14,7 @@ const createUserDao = (
     email,
     avatar,
     createdAt,
+    role,
   };
 };
 
